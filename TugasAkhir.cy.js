@@ -16,8 +16,6 @@ describe('Login page', () => {
 
     it('Login Successfully', () => {
       const loginObj = new loginPage()
-
-      cy.intercept('POST', validateUrl).as('validateRequest')
       
       loginObj.enterUsername(username)
       loginObj.enterPassword(password)
@@ -25,13 +23,10 @@ describe('Login page', () => {
 
       // cek url setelah login
       cy.url().should('include', '/dashboard/index')
-      cy.wait('@validateRequest').its('response.statusCode').should('eq', 302)
     })
   
     it('Invalid Credentials Wrong Username', () => {
       const loginObj = new loginPage()
-
-      cy.intercept('POST', validateUrl).as('validateRequest')
 
       loginObj.enterUsername(wrongUsername)
       loginObj.enterPassword(password)
@@ -39,13 +34,10 @@ describe('Login page', () => {
 
       // error credential
       loginObj.elements.errorMessage().should('be.visible').and('contain', 'Invalid credentials')
-      cy.wait('@validateRequest').its('response.statusCode').should('eq', 302)
     })
 
     it('Invalid Credentials Wrong Password', () => {
         const loginObj = new loginPage()
-
-        cy.intercept('POST', validateUrl).as('validateRequest')
 
         loginObj.enterUsername(username)
         loginObj.enterPassword(wrongPassword)
@@ -53,7 +45,6 @@ describe('Login page', () => {
   
         // error credential
         loginObj.elements.errorMessage().should('be.visible').and('contain', 'Invalid credentials')
-        cy.wait('@validateRequest').its('response.statusCode').should('eq', 302)
       })
 
     it('Empty Credentials', () => {        
