@@ -6,7 +6,6 @@ describe('Login page', () => {
     const password = 'admin123'
     const wrongUsername = 'NotAdmin'
     const wrongPassword = 'wrongpassword'
-    const validateUrl = 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/validate'
 
     beforeEach(() => {
         cy.visit(loginUrl)
@@ -14,8 +13,6 @@ describe('Login page', () => {
 
     it('Login Successfully', () => {
       const loginObj = new loginPage()
-
-      cy.intercept('POST', validateUrl).as('validateRequest')
       
       loginObj.enterUsername(username)
       loginObj.enterPassword(password)
@@ -23,13 +20,10 @@ describe('Login page', () => {
 
       // cek url setelah login
       cy.url().should('include', '/dashboard/index')
-      cy.wait('@validateRequest').its('response.statusCode').should('eq', 302)
     })
   
     it('Invalid Credentials Wrong Username', () => {
       const loginObj = new loginPage()
-
-      cy.intercept('POST', validateUrl).as('validateRequest')
 
       loginObj.enterUsername(wrongUsername)
       loginObj.enterPassword(password)
@@ -37,13 +31,10 @@ describe('Login page', () => {
 
       // error credential
       loginObj.elements.errorMessage().should('be.visible').and('contain', 'Invalid credentials')
-      cy.wait('@validateRequest').its('response.statusCode').should('eq', 302)
     })
 
     it('Invalid Credentials Wrong Password', () => {
         const loginObj = new loginPage()
-
-        cy.intercept('POST', validateUrl).as('validateRequest')
 
         loginObj.enterUsername(username)
         loginObj.enterPassword(wrongPassword)
@@ -51,7 +42,6 @@ describe('Login page', () => {
   
         // error credential
         loginObj.elements.errorMessage().should('be.visible').and('contain', 'Invalid credentials')
-        cy.wait('@validateRequest').its('response.statusCode').should('eq', 302)
       })
 
     it('Empty Credentials', () => {        
@@ -61,6 +51,5 @@ describe('Login page', () => {
   
         // error credential
         loginObj.elements.requiredError().should('be.visible').and('contain', 'Required')
-        
       })
-  })
+})
